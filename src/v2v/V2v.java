@@ -4,28 +4,57 @@ import java.io.*;
 import java.util.*;
 
 public class V2v {
-    private Set<String> dictionary = new HashSet<>();
+    private static File file;
+    public static Map<String, Integer> dictionary;
+    private Map<String, Map<String, Boolean>> textVectors;
+    int count;
 
     public V2v() {
-        dictionary = new HashSet<>();
+        dictionary = new HashMap<>();
+        count = 0;
     }
 
     public void addFileToDict(File path) throws IOException {
-        int size = dictionary.size();
+        this.file = path;
+        //int size = dictionary.size();
         try (Scanner scan = new Scanner(path)) {
             scan.useDelimiter(" +");
+            //System.out.println("!");
             skipHeader(scan);
 
+            int i = 0;
             while (scan.hasNext()) {
-                dictionary.add(scan.next());
+                if (dictionary.size() < 50000) {
+                    dictionary.put(scan.next().replaceAll("(\\n)|([\\p{P}])", ""), i);
+                } else scan.next();
+                i++;
             }
         }
-        System.out.println(dictionary.size() + " " + (dictionary.size() - size));
+        //System.out.println(dictionary.size() + " " + (dictionary.size() - size));
     }
 
-    private void skipHeader(Scanner scan) {
-        while (!scan.next().matches(".*\\nLines:.*")) {
+    protected static Scanner skipHeader(Scanner scan) throws FileNotFoundException {
+        try {
+            while (!scan.next().replaceAll("(\\n)|([\\p{P}])", "").matches(".*Lines.*")) {
+            }
+            scan.nextLine();
+        } catch (NoSuchElementException e) {
+            Scanner scan2 = new Scanner(file);
+            scan.useDelimiter(" +");
+            scan = skipHeader2(scan2);
+            //System.out.println(file);
         }
-        scan.nextLine();
+        return scan;
+    }
+
+    protected static Scanner skipHeader2(Scanner scan) {
+        try {
+            while (!scan.next().replaceAll("(\\n)|([\\p{P}])", "").matches(".*Date.*")) {
+            }
+            scan.nextLine();
+        } catch (NoSuchElementException e) {
+            System.out.println("Level 2: " + file);
+        }
+        return scan;
     }
 }
