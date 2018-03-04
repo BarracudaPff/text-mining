@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println("Start program");
-        System.out.println("done 1");
+        /*System.out.println("done 1");
         TextInfo[] textInfo = startDict();//119938
 
         int i = 0;
@@ -20,7 +20,7 @@ public class Main {
         }
         System.out.println(i);
 
-        System.out.println("done 2");
+        System.out.println("done 2");*/
         /*createARFF();
         fillARFF(textInfo);
 
@@ -28,6 +28,61 @@ public class Main {
         WithWeka weka = new WithWeka();
         weka.loadArff("./test.arff");
         weka.clusterData();*/
+
+        ArrayList<Integer>[] table = new ArrayList[5];
+        for (int i = 0; i < table.length; i++) {
+            table[i] = new ArrayList<Integer>();
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader("output.txt"))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                String[] mas = line.split(" ");
+                table[Integer.parseInt(mas[4])].add(Integer.parseInt(mas[1]));
+                line = br.readLine();
+            }
+        }
+        for (ArrayList<Integer> arrayList : table) {
+            System.out.print("[");
+            for (Integer o : arrayList) {
+                if (o < 998)
+                    System.out.print("1." + o + ", ");
+                else if (o < 998 + 1000)
+                    System.out.print("2." + (o - 1000) + ", ");
+                else if (o < 998 + 2000)
+                    System.out.print("3." + (o - 2000) + ", ");
+                else if (o < 998 + 2998)
+                    System.out.print("4." + (o - 2998) + ", ");
+                else if (o < 998 + 2998 + 991)
+                    System.out.print("5." + (o - 2998 - 991) + ", ");
+            }
+            System.out.println("]");
+        }
+        double maxTP = 0;
+        double[] TP = new double[5];
+        for (ArrayList<Integer> list : table) {
+            for (Integer o : list) {
+                if (o < 998)
+                    TP[0]++;
+                else if (o < 998 + 1000)
+                    TP[1]++;
+                else if (o < 998 + 2000)
+                    TP[2]++;
+                else if (o < 998 + 2998)
+                    TP[3]++;
+                else if (o < 998 + 2998 + 991)
+                    TP[4]++;
+            }
+        }
+/*
+Length 0 is 998
+Length 1 is 1000
+Length 2 is 1000
+Length 3 is 998
+Length 4 is 991
+ */
     }
 
     private static void fillARFF(TextInfo[] textInfo) throws IOException {
