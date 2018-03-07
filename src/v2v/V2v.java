@@ -6,33 +6,42 @@ import java.util.*;
 public class V2v {
     private static File file;
     public static Map<String, Integer> dictionary;
-    private Map<String, Map<String, Boolean>> textVectors;
-    int count;
 
     public V2v() {
         dictionary = new HashMap<>();
-        count = 0;
     }
 
+    /**
+     * Add new words to dictionary from documents in path folder.
+     *
+     * @param path Folder in main data path
+     * @throws IOException
+     */
     public void addFileToDict(File path) throws IOException {
         this.file = path;
-        //int size = dictionary.size();
         try (Scanner scan = new Scanner(path)) {
             scan.useDelimiter(" +");
-            //System.out.println("!");
             skipHeader(scan);
 
             int i = 0;
+            String word;
             while (scan.hasNext()) {
-                if (dictionary.size() < 50000) {
-                    dictionary.put(scan.next().replaceAll("(\\n)|([\\p{P}])", ""), i);
-                } else scan.next();
-                i++;
+                word = scan.next().replaceAll("(\\n)|([\\p{P}])", "");
+                if (word.length() > 2) {
+                    dictionary.put(word, i);
+                    i++;
+                }
             }
         }
-        //System.out.println(dictionary.size() + " " + (dictionary.size() - size));
     }
 
+    /**
+     * Skipping header up to "Lines:"
+     *
+     * @param scan
+     * @return
+     * @throws FileNotFoundException
+     */
     protected static Scanner skipHeader(Scanner scan) throws FileNotFoundException {
         try {
             while (!scan.next().replaceAll("(\\n)|([\\p{P}])", "").matches(".*Lines.*")) {
@@ -42,11 +51,16 @@ public class V2v {
             Scanner scan2 = new Scanner(file);
             scan.useDelimiter(" +");
             scan = skipHeader2(scan2);
-            //System.out.println(file);
         }
         return scan;
     }
 
+    /**
+     * If no "Lines:", skipping header up to "Date:"
+     *
+     * @param scan
+     * @return
+     */
     protected static Scanner skipHeader2(Scanner scan) {
         try {
             while (!scan.next().replaceAll("(\\n)|([\\p{P}])", "").matches(".*Date.*")) {

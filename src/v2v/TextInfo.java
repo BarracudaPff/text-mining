@@ -8,6 +8,9 @@ import java.util.Scanner;
 
 import static v2v.V2v.skipHeader;
 
+/**
+ * Words to vector class.
+ */
 public class TextInfo {
 
     private Map<String, Boolean> textVector;
@@ -20,7 +23,6 @@ public class TextInfo {
         this.title = file.getName();
         fillFile();
         v2v();
-        //System.out.println(textVector);
     }
 
     private void fillFile() throws FileNotFoundException {
