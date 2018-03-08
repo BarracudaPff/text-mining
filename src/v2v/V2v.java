@@ -1,14 +1,23 @@
 package v2v;
 
+import org.tartarus.snowball.ext.PorterStemmer;
+
 import java.io.*;
 import java.util.*;
 
 public class V2v {
     private static File file;
     public static Map<String, Integer> dictionary;
+    public static Set<String> dictionaryStop;
 
-    public V2v() {
+    private int index;
+    private PorterStemmer stemmer;
+
+    public V2v() throws FileNotFoundException {
+        index = 0;
         dictionary = new HashMap<>();
+        stemmer = new PorterStemmer();
+        initDictionaryStop();
     }
 
     /**
@@ -18,19 +27,22 @@ public class V2v {
      * @throws IOException
      */
     public void addFileToDict(File path) throws IOException {
-        this.file = path;
-        try (Scanner scan = new Scanner(path)) {
-            scan.useDelimiter(" +");
-            skipHeader(scan);
+        file = path;
+        FileReader reader = new FileReader(path);
+        Scanner scan = new Scanner(reader);
+        scan.useDelimiter(" +");
+        skipHeader(scan);
 
-            int i = 0;
-            String word;
-            while (scan.hasNext()) {
-                word = scan.next().replaceAll("(\\n)|([\\p{P}])", "");
-                if (word.length() > 2) {
-                    dictionary.put(word, i);
-                    i++;
-                }
+        String word;
+        while (scan.hasNext()) {
+            word = scan.next().replaceAll("(\\n)|([\\p{P}])|[0-9]|(\\s)", "");
+            stemmer.setCurrent(word);
+            stemmer.stem();
+            word = stemmer.getCurrent();
+
+            if (word.length() > 2 && !dictionaryStop.contains(word)) {
+                dictionary.put(word, index);
+                index++;
             }
         }
     }
@@ -42,9 +54,9 @@ public class V2v {
      * @return
      * @throws FileNotFoundException
      */
-    protected static Scanner skipHeader(Scanner scan) throws FileNotFoundException {
+    static Scanner skipHeader(Scanner scan) throws FileNotFoundException {
         try {
-            while (!scan.next().replaceAll("(\\n)|([\\p{P}])", "").matches(".*Lines.*")) {
+            while (!scan.next().replaceAll("(\\n)|([\\p{P}])|[0-9]|(\\s)", "").matches(".*Lines.*")) {
             }
             scan.nextLine();
         } catch (NoSuchElementException e) {
@@ -61,14 +73,20 @@ public class V2v {
      * @param scan
      * @return
      */
-    protected static Scanner skipHeader2(Scanner scan) {
+    private static Scanner skipHeader2(Scanner scan) {
         try {
-            while (!scan.next().replaceAll("(\\n)|([\\p{P}])", "").matches(".*Date.*")) {
+            while (!scan.next().replaceAll("(\\n)|([\\p{P}])|[0-9]|(\\s)", "").matches(".*Date.*")) {
             }
             scan.nextLine();
         } catch (NoSuchElementException e) {
             System.out.println("Level 2: " + file);
         }
         return scan;
+    }
+
+    private void initDictionaryStop() throws FileNotFoundException {
+        Scanner scan = new Scanner(new File(".\\dict"));
+        dictionaryStop = new HashSet<>(Arrays.asList(scan.nextLine().split(", ")));
+        System.out.println(dictionaryStop);
     }
 }

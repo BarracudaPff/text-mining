@@ -3,6 +3,7 @@ import v2v.V2v;
 import weka.core.*;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class Main {
 
@@ -13,8 +14,8 @@ public class Main {
 
     private static Main instance;
 
-    public Main() {
-        root = new File("C:\\Users\\Barracuda\\IdeaProjects\\TextMining\\data");
+    public Main() throws FileNotFoundException {
+        root = new File("C:\\Users\\Barracuda\\IdeaProjects\\TextMining\\text-mining\\data");
         v = new V2v();
         textInfo = new TextInfo[5000];
         start = 0;
@@ -41,14 +42,16 @@ public class Main {
 
         System.out.println("Text vectors created");
 
-        instance.createARFF();
+
+
+        /*instance.createARFF();
         instance.fillARFF();
 
         System.out.println("ARFF file created and filled");
 
         WithWeka weka = new WithWeka(5);
         weka.loadArff("./test.arff");
-        weka.clusterData();
+        weka.clusterData();*/
     }
 
     /*
