@@ -16,7 +16,7 @@ import static v2v.V2v.skipHeader;
  */
 public class TextInfo {
 
-    private Map<String, Boolean> textVector;
+    private Map<String, Integer> textVector;
     public String title;
     private File file;
     private PorterStemmer stemmer;
@@ -26,8 +26,8 @@ public class TextInfo {
         this.file = file;
         this.title = file.getName();
         stemmer = new PorterStemmer();
-        fillFile();
         v2v();
+        fillFile();
     }
 
     private void fillFile() throws FileNotFoundException {
@@ -44,19 +44,19 @@ public class TextInfo {
             word = stemmer.getCurrent();
 
             if (word.length() > 2 && !V2v.dictionaryStop.contains(word)) {
-                textVector.put(word, true);
+                textVector.put(word, 1);
             }
         }
     }
 
     private void v2v() throws FileNotFoundException {
+        textVector = new HashMap<>();
         for (String s : V2v.dictionary.keySet()) {
-            if (!textVector.containsKey(s))
-                textVector.put(s, false);
+            textVector.put(s, 0);
         }
     }
 
-    public Map<String, Boolean> getTextVector() {
+    public Map<String, Integer> getTextVector() {
         return textVector;
     }
 }

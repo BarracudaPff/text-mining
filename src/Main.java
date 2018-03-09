@@ -35,14 +35,21 @@ public class Main {
         System.out.println("Dictionary created with size - " + V2v.dictionary.size());
 
         instance.createTextVector("alt.atheism");
+        System.out.println("1");
         instance.createTextVector("comp.graphics");
+        System.out.println("2");
         instance.createTextVector("comp.os.ms-windows.misc");
+        System.out.println("3");
         instance.createTextVector("comp.sys.ibm.pc.hardware");
+        System.out.println("4");
         instance.createTextVector("comp.sys.mac.hardware");
+        System.out.println("5");
 
         System.out.println("Text vectors created");
+        System.out.println("Dictionary created with size - " + V2v.dictionary.size());
+        System.out.println("Dictionary created with size - " + instance.textInfo[1].getTextVector().size());
 
-        instance.optimizeVectors();
+        //instance.optimizeVectors();
 
         System.out.println("Dictionary created with size - " + V2v.dictionary.size());
         System.out.println("Dictionary created with size - " + instance.textInfo[1].getTextVector().size());
@@ -75,7 +82,7 @@ public class Main {
 
             for (int j = 0; j < instance.textInfo.length; j++) {
                 try {
-                    if (instance.textInfo[j].getTextVector().get(s))
+                    if (instance.textInfo[j].getTextVector().get(s) == 1)
                         count++;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -85,8 +92,7 @@ public class Main {
             }
             if (count == 1)
                 for (int j = 0; j < instance.textInfo.length; j++) {
-                    if (instance.textInfo[j].getTextVector().remove(s))
-                        count++;
+                    instance.textInfo[j].getTextVector().remove(s);
                 }
         }
     }
@@ -105,7 +111,7 @@ public class Main {
             byte[] vector = new byte[V2v.dictionary.size()];
             for (String s : info.getTextVector().keySet()) {
                 if (V2v.dictionary.containsKey(s))
-                    if (info.getTextVector().get(s)) {
+                    if (info.getTextVector().get(s)==1) {
                         vector[V2v.dictionary.get(s)] = 1;
                     } else {
                         vector[V2v.dictionary.get(s)] = 0;

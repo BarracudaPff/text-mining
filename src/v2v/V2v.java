@@ -88,6 +88,5 @@ public class V2v {
     private void initDictionaryStop() throws FileNotFoundException {
         Scanner scan = new Scanner(new File(".\\dict"));
         dictionaryStop = new HashSet<>(Arrays.asList(scan.nextLine().split(", ")));
-        System.out.println(dictionaryStop);
     }
 }
