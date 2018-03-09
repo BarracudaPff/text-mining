@@ -10,11 +10,11 @@ public class V2v {
     public static Map<String, Integer> dictionary;
     public static Set<String> dictionaryStop;
 
-    private int index;
+    private static int index;
     private PorterStemmer stemmer;
 
     public V2v() throws FileNotFoundException {
-        index = 0;
+        V2v.index = 0;
         dictionary = new HashMap<>();
         stemmer = new PorterStemmer();
         initDictionaryStop();
@@ -41,8 +41,9 @@ public class V2v {
             word = stemmer.getCurrent();
 
             if (word.length() > 2 && !dictionaryStop.contains(word)) {
+                if (!dictionary.containsKey(word))
+                    V2v.index++;
                 dictionary.put(word, index);
-                index++;
             }
         }
     }

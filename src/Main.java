@@ -15,9 +15,9 @@ public class Main {
     private static Main instance;
 
     public Main() throws FileNotFoundException {
-        root = new File("C:\\Users\\Barracuda\\IdeaProjects\\TextMining\\text-mining\\data");
+        root = new File(".\\data");
         v = new V2v();
-        textInfo = new TextInfo[5000];
+        textInfo = new TextInfo[4987];
         start = 0;
     }
 
@@ -42,7 +42,10 @@ public class Main {
 
         System.out.println("Text vectors created");
 
+        instance.optimizeVectors();
 
+        System.out.println("Dictionary created with size - " + V2v.dictionary.size());
+        System.out.println("Dictionary created with size - " + instance.textInfo[1].getTextVector().size());
 
         /*instance.createARFF();
         instance.fillARFF();
@@ -62,6 +65,32 @@ public class Main {
       Length 4 is 991
      */
 
+    private void optimizeVectors() {
+        /*for (int i = 0; i < instance.textInfo.length; i++) {
+            System.out.println(i);
+            instance.textInfo[i].getTextVector();
+        }*/
+        for (String s : V2v.dictionary.keySet()) {
+            int count = 0;
+
+            for (int j = 0; j < instance.textInfo.length; j++) {
+                try {
+                    if (instance.textInfo[j].getTextVector().get(s))
+                        count++;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("C - " + count);
+                    return;
+                }
+            }
+            if (count == 1)
+                for (int j = 0; j < instance.textInfo.length; j++) {
+                    if (instance.textInfo[j].getTextVector().remove(s))
+                        count++;
+                }
+        }
+    }
+
     /**
      * Filling arff file with data from text vectors.
      *
@@ -76,10 +105,11 @@ public class Main {
             byte[] vector = new byte[V2v.dictionary.size()];
             for (String s : info.getTextVector().keySet()) {
                 if (V2v.dictionary.containsKey(s))
-                    if (info.getTextVector().get(s))
+                    if (info.getTextVector().get(s)) {
                         vector[V2v.dictionary.get(s)] = 1;
-                    else
+                    } else {
                         vector[V2v.dictionary.get(s)] = 0;
+                    }
             }
             for (int i = 0; i < vector.length; i++) {
                 fwriter.write(vector[i] + ",");
